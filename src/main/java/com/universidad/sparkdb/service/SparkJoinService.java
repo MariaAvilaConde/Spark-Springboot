@@ -89,6 +89,34 @@ public class SparkJoinService {
     }
 
     // ─────────────────────────────────────────
+    // Lectura individual por BD
+    // ─────────────────────────────────────────
+
+    /** GET /api/spark/estudiantes → MySQL Aiven */
+    public List<Row> getEstudiantes() {
+        logger.info("Leyendo tabla estudiante desde MySQL (Aiven)...");
+        Dataset<Row> ds = readFromMySQL("estudiante");
+        logger.info("Total estudiantes: {}", ds.count());
+        return ds.orderBy("apellido", "nombre").collectAsList();
+    }
+
+    /** GET /api/spark/carreras → PostgreSQL Neon */
+    public List<Row> getCarreras() {
+        logger.info("Leyendo tabla carrera_universidad desde PostgreSQL (Neon)...");
+        Dataset<Row> ds = readFromNeon("carrera_universidad");
+        logger.info("Total carreras: {}", ds.count());
+        return ds.orderBy("nombre").collectAsList();
+    }
+
+    /** GET /api/spark/matriculas → PostgreSQL Supabase */
+    public List<Row> getMatriculas() {
+        logger.info("Leyendo tabla matricula desde PostgreSQL (Supabase)...");
+        Dataset<Row> ds = readFromSupabase("matricula");
+        logger.info("Total matrículas: {}", ds.count());
+        return ds.orderBy("id").collectAsList();
+    }
+
+    // ─────────────────────────────────────────
     // JOIN principal: 3 bases de datos
     // ─────────────────────────────────────────
 
